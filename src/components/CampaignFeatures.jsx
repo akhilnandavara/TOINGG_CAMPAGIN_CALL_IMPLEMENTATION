@@ -52,12 +52,14 @@ export default function CampaignFeatures() {
     fetchLanguagesAndVoices();
     // If updating, fetch existing campaign data
     if (isUpdate) {
+      console.log("Fetching campaign data");
       const fetchCampaignData = async () => {
         try {
           const response = await axios.get(
             `${toinggUrl}/api/v3/get_campaigns`,
-            { header: headers }
+            { method: "GET", headers: headers }
           );
+          console.log(response);
           setCampaignData(response.data);
         } catch (error) {
           console.error("Error fetching campaign data", error);
@@ -72,10 +74,6 @@ export default function CampaignFeatures() {
     const { name, value } = e.target;
     setCampaignData({ ...campaignData, [name]: value });
   };
-
-  //   const handleFileChange = (e) => {
-  //     setCampaignData({ ...campaignData, file: e.target.files[0] });
-  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -216,16 +214,6 @@ export default function CampaignFeatures() {
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
         </>
-        {/* file upload */}
-        {/* <>
-          <label className="block text-sm font-medium ">Upload Document</label>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
-          />
-        </> */}
-
         <button
           type="submit"
           disabled={isSubmitting}
