@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 const key = import.meta.env.VITE_AUTH_KEY;
 const toinggUrl = import.meta.env.VITE_TOINGG_URL;
-CampaignForm.propTypes = {
-    campaignId: PropTypes.string.isRequired,
-  };
 
-const CampaignForm = ({ campaignId }) => {
+export default function CampaignFeatures() {
   const [campaignData, setCampaignData] = useState({
     title: "",
     voice: "",
@@ -21,6 +18,7 @@ const CampaignForm = ({ campaignId }) => {
     postCallAnalysis: false,
     postCallAnalysisSchema: {},
   });
+
   const url = location.pathname;
   const [languages, setLanguages] = useState([]);
   const [voices, setVoices] = useState([]);
@@ -38,11 +36,11 @@ const CampaignForm = ({ campaignId }) => {
       try {
         const languageResponse = await axios.get(
           `${toinggUrl}/api/v3/get_supported_languages`,
-          headers
+          { headers: headers }
         );
         const voiceResponse = await axios.get(
           `${toinggUrl}/api/v3/get_supported_voices`,
-          headers
+          { headers: headers }
         );
         setLanguages(languageResponse.data.result.languages);
         setVoices(voiceResponse.data.result.voice);
@@ -58,7 +56,7 @@ const CampaignForm = ({ campaignId }) => {
         try {
           const response = await axios.get(
             `${toinggUrl}/api/v3/get_campaigns`,
-            headers
+            { header: headers }
           );
           setCampaignData(response.data);
         } catch (error) {
@@ -68,47 +66,59 @@ const CampaignForm = ({ campaignId }) => {
 
       fetchCampaignData();
     }
-  }, [campaignId, isUpdate]);
+  }, [isUpdate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCampaignData({ ...campaignData, [name]: value });
   };
 
-//   const handleFileChange = (e) => {
-//     setCampaignData({ ...campaignData, file: e.target.files[0] });
-//   };
+  //   const handleFileChange = (e) => {
+  //     setCampaignData({ ...campaignData, file: e.target.files[0] });
+  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    const formData = new FormData();
-    for (const key in campaignData) {
-      formData.append(key, campaignData[key]);
-    }
 
     try {
       if (isUpdate) {
         await axios.put(`${toinggUrl}/api/v3/update_campaign`, {
           method: "PUT",
           headers: headers,
-          body: JSON.stringify(formData),
+          body: JSON.stringify(),
         });
         alert("Campaign updated successfully!");
       } else {
-        await axios.post(`${toinggUrl}/api/v3/create-campaign`, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(formData),
-        });
-        alert("Campaign created successfully!");
+        await axios
+          .post(`${toinggUrl}/api/v3/create_campaign`, campaignData, {
+            headers,
+          })
+          .then(() => {
+            alert("Campaign created successfully!");
+          })
+          .catch((error) => {
+            throw new Error(error.response.data.detail);
+          });
       }
     } catch (error) {
-      console.error("Error saving campaign", error);
-      alert("Failed to save campaign.");
+      console.error("Error creating/updating campaign", error);
+      alert(error);
     } finally {
       setIsSubmitting(false);
+      setCampaignData({
+        title: "",
+        voice: "",
+        language: "",
+        script: "",
+        purpose: "",
+        knowledgeBase: "",
+        calendar: "10Am to 10Pm IST",
+        firstLine: "",
+        tone: "",
+        postCallAnalysis: false,
+        postCallAnalysisSchema: {},
+      });
     }
   };
 
@@ -166,8 +176,8 @@ const CampaignForm = ({ campaignId }) => {
           >
             <option value="">Select a voice</option>
             {voices.map((voice, i) => (
-              <option key={i} value={voice}>
-                {voice.name}
+              <option key={i} value={voice.name}>
+                {voice.name} {voice?.type}
               </option>
             ))}
           </select>
@@ -183,11 +193,16 @@ const CampaignForm = ({ campaignId }) => {
             value={campaignData.script}
             onChange={handleChange}
           ></textarea>
-          {campaignData.script.length < 200 && (
-            <p className="text-red-600 text-xs">
-              Need To have min of 200 Characters
-            </p>
-          )}
+
+          <p
+            className={` ${
+              campaignData?.script === "" || campaignData?.script?.length > 200
+                ? "hidden"
+                : "block"
+            } text-red-600 text-xs`}
+          >
+            Need To have min of 200 Characters
+          </p>
         </>
         <>
           <label className="block text-sm font-medium ">
@@ -227,6 +242,4 @@ const CampaignForm = ({ campaignId }) => {
       </form>
     </div>
   );
-};
-
-export default CampaignForm;
+}
