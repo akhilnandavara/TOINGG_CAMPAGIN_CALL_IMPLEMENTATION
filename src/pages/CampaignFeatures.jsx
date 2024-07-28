@@ -1,33 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-// import PropTypes from "prop-types";
+
 const key = import.meta.env.VITE_AUTH_KEY;
 const toinggUrl = import.meta.env.VITE_TOINGG_URL;
 
-export default function CampaignFeatures() {
+import PropTypes from "prop-types";
+
+export default function CampaignFeatures({ isUpdate }) {
+  CampaignFeatures.propTypes = {
+    isUpdate: PropTypes.bool.isRequired,
+  };
+
   const [campaignData, setCampaignData] = useState({
     title: "",
     voice: "",
     language: "",
     script: "",
     purpose: "",
-    knowledgeBase: "",
+    knowledgeBaseUrl: "",
     calendar: "10Am to 10Pm IST",
     firstLine: "",
     tone: "",
     postCallAnalysis: false,
     postCallAnalysisSchema: {},
+    knowledgeBase: "",
   });
 
-  const url = location.pathname;
   const [languages, setLanguages] = useState([]);
   const [voices, setVoices] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isUpdate = Boolean(url === "/update-campaign");
+  const fileInputRef = useRef(null);
 
   const headers = {
     accept: "application/json",
-    Authorization: "Bearer " + key,
+    Authorization: `Bearer ${key}`,
     "Content-Type": "application/json",
   };
 
@@ -36,11 +42,11 @@ export default function CampaignFeatures() {
       try {
         const languageResponse = await axios.get(
           `${toinggUrl}/api/v3/get_supported_languages`,
-          { headers: headers }
+          { headers }
         );
         const voiceResponse = await axios.get(
           `${toinggUrl}/api/v3/get_supported_voices`,
-          { headers: headers }
+          { headers }
         );
         setLanguages(languageResponse.data.result.languages);
         setVoices(voiceResponse.data.result.voice);
@@ -49,59 +55,124 @@ export default function CampaignFeatures() {
       }
     };
 
-    fetchLanguagesAndVoices();
-    // If updating, fetch existing campaign data
-    if (isUpdate) {
-      console.log("Fetching campaign data");
-      const fetchCampaignData = async () => {
-        try {
-          const response = await axios.get(
-            `${toinggUrl}/api/v3/get_campaigns`,
-            { method: "GET", headers: headers }
-          );
-          console.log(response);
-          setCampaignData(response.data);
-        } catch (error) {
-          console.error("Error fetching campaign data", error);
-        }
-      };
+    const fetchCampaignData = async () => {
+      try {
+        const response = await axios.get(`${toinggUrl}/api/v3/get_campaigns`, {
+          headers,
+        });
+        console.log(response);
 
+        const campaign = response.data.result.find(
+          (c) => c.id === localStorage.getItem("campaignId")
+        );
+        if (campaign) {
+          setCampaignData(campaign);
+        } else {
+          alert("Campaign not found");
+        }
+      } catch (error) {
+        console.error("Error fetching campaign data", error);
+      }
+    };
+
+    fetchLanguagesAndVoices();
+
+    if (isUpdate) {
       fetchCampaignData();
     }
-  }, [isUpdate]);
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCampaignData({ ...campaignData, [name]: value });
+    const { name, value, files } = e.target;
+
+    if (name === "knowledgeBase" && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setCampaignData((prevState) => ({
+          ...prevState,
+          knowledgeBase: reader.result, // Base64 string
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      setCampaignData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const knowledgeBaseData =
+      campaignData.knowledgeBaseUrl || campaignData.knowledgeBase || "";
+
+    const processedData = {
+      title: campaignData.title,
+      voice: campaignData.voice,
+      language: campaignData.language,
+      script: campaignData.script,
+      purpose: campaignData.purpose,
+      knowledgeBase: knowledgeBaseData,
+      calendar: campaignData.calendar,
+      firstLine: campaignData.firstLine,
+      tone: campaignData.tone,
+      postCallAnalysis: campaignData.postCallAnalysis,
+      postCallAnalysisSchema: campaignData.postCallAnalysisSchema,
+    };
+
     try {
       if (isUpdate) {
-        await axios.put(`${toinggUrl}/api/v3/update_campaign`, {
-          method: "PUT",
-          headers: headers,
-          body: JSON.stringify(),
-        });
-        alert("Campaign updated successfully!");
+        const campaignId = localStorage.getItem("campaignId");
+        if (campaignId) {
+          await axios
+            .put(
+              `${toinggUrl}/api/v3/update_campaign/${campaignId}`,
+              processedData,
+              {
+                headers,
+              }
+            )
+            .then(() => {
+              alert("Campaign updated successfully!");
+            })
+            .catch((error) => {
+              console.error("Error updating campaign", error);
+              alert(
+                error.response.data.detail ||
+                  "An error occurred while updating the campaign."
+              );
+            });
+        } else {
+          alert("Campaign ID not found in local storage.");
+        }
       } else {
         await axios
-          .post(`${toinggUrl}/api/v3/create_campaign`, campaignData, {
+          .post(`${toinggUrl}/api/v3/create_campaign`, processedData, {
             headers,
           })
-          .then(() => {
+          .then((res) => {
+            localStorage.setItem("campaignId", res.data.result.campaignId);
             alert("Campaign created successfully!");
           })
           .catch((error) => {
-            throw new Error(error.response.data.detail);
+            console.error("Error creating campaign", error);
+            alert(
+              error.response.data.detail ||
+                "An error occurred while creating the campaign."
+            );
           });
       }
     } catch (error) {
-      console.error("Error creating/updating campaign", error);
-      alert(error);
+      console.error("Error processing campaign", error);
+      alert(
+        error.message || "An error occurred while processing the campaign."
+      );
     } finally {
       setIsSubmitting(false);
       setCampaignData({
@@ -110,6 +181,7 @@ export default function CampaignFeatures() {
         language: "",
         script: "",
         purpose: "",
+        knowledgeBaseUrl: "",
         knowledgeBase: "",
         calendar: "10Am to 10Pm IST",
         firstLine: "",
@@ -117,17 +189,20 @@ export default function CampaignFeatures() {
         postCallAnalysis: false,
         postCallAnalysisSchema: {},
       });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Clear file input field
+      }
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-5 text-gray-700 bg-white rounded-lg shadow-lg transition transform duration-500 hover:scale-105">
-      <h2 className="text-2xl font-bold mb-4 ">
+      <h2 className="text-2xl font-bold mb-4">
         {isUpdate ? "Update Campaign" : "Create Campaign"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title */}
-        <>
+        <div>
           <label className="block text-sm font-medium text-gray-700">
             Title
           </label>
@@ -139,9 +214,8 @@ export default function CampaignFeatures() {
             required
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
-        </>
-        {/* language */}
-        <>
+        </div>
+        <div>
           <label className="block text-sm font-medium text-gray-700">
             Language
           </label>
@@ -159,9 +233,8 @@ export default function CampaignFeatures() {
               </option>
             ))}
           </select>
-        </>
-        {/* voice */}
-        <>
+        </div>
+        <div>
           <label className="block text-sm font-medium text-gray-700">
             Voice
           </label>
@@ -179,31 +252,28 @@ export default function CampaignFeatures() {
               </option>
             ))}
           </select>
-        </>
-        {/* script */}
-        <>
-          <label className="block text-sm font-medium ">Script</label>
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Script</label>
           <textarea
-            type="text"
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
             placeholder="The script should have a minimum of 200 characters."
             name="script"
             value={campaignData.script}
             onChange={handleChange}
           ></textarea>
-
           <p
-            className={` ${
-              campaignData?.script === "" || campaignData?.script?.length > 200
+            className={`${
+              campaignData.script === "" || campaignData.script.length > 200
                 ? "hidden"
                 : "block"
             } text-red-600 text-xs`}
           >
             Need To have min of 200 Characters
           </p>
-        </>
-        <>
-          <label className="block text-sm font-medium ">
+        </div>
+        <div>
+          <label className="block text-sm font-medium">
             Knowledge Base URL
           </label>
           <input
@@ -213,19 +283,26 @@ export default function CampaignFeatures() {
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
-        </>
+        </div>
+        <div>
+          <label className="block text-sm font-medium">
+            Knowledge Base Document
+          </label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            name="knowledgeBase"
+            accept=".pdf,.doc,.docx,.xls,.xlsx"
+            onChange={handleChange}
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+          />
+        </div>
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full p-2 text-white rounded-md ${
-            isSubmitting ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-          } transition duration-300`}
+          className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
         >
-          {isSubmitting
-            ? "Saving..."
-            : isUpdate
-            ? "Update Campaign"
-            : "Create Campaign"}
+          {isUpdate ? "Update Campaign" : "Create Campaign"}
         </button>
       </form>
     </div>

@@ -10,14 +10,14 @@ import Overview from "./pages/Overview";
 const App = () => {
   return (
     <Router>
-      <div className="flex overflow-hidden max-h-screen ">
+      <div className="flex overflow-hidden ">
         <SideMenu />
         <div className="flex-grow p-10 bg-primary text-primary">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/login" element={<LoginSignup />} />
-            <Route path="/create-campaign" element={<CampaignFeatures />} />
-            <Route path="/update-campaign" element={<CampaignFeatures />} />
+            <Route path="/create-campaign" element={<CampaignFeatures isUpdate={false} />} />
+            <Route path="/update-campaign" element={<CampaignFeatures isUpdate={true} />} />
           </Routes>
         </div>
       </div>
