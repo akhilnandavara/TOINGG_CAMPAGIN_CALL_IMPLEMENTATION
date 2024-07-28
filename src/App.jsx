@@ -8,14 +8,20 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import CallFeature from "./pages/CallFeature";
 import CallLog from "./pages/CallLog";
+import { useState } from "react";
 
 const App = () => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
     <AuthProvider>
       <Router>
-        <div className="flex overflow-hidden ">
-          <SideMenu />
-          <div className="flex-grow p-10 bg-primary text-primary">
+        <div className="flex max-h-screen  ">
+          <SideMenu isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+         
+          <div className={`flex-1 ${
+          isExpanded ? "  max-sm::ml-64" : "ml-20"
+        } p-6 overflow-y-auto`}>
             <Routes>
               <Route path="/" element={<Overview />} />
               <Route path="/login" element={<LoginSignup />} />

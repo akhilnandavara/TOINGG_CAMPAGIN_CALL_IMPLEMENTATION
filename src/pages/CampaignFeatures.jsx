@@ -191,18 +191,18 @@ export default function CampaignFeatures({ isUpdate }) {
       });
 
       if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // Clear file input field
+        fileInputRef.current.value = "";
       }
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-5 text-gray-700 bg-white rounded-lg shadow-lg transition transform duration-500 hover:scale-105">
+    <div className="max-w-md mx-auto p-5 text-gray-700  rounded-lg shadow-lg transition transform duration-500 hover:scale-105">
       <h2 className="text-2xl font-bold mb-4">
         {isUpdate ? "Update Campaign" : "Create Campaign"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+        <>
           <label className="block text-sm font-medium text-gray-700">
             Title
           </label>
@@ -214,8 +214,8 @@ export default function CampaignFeatures({ isUpdate }) {
             required
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
-        </div>
-        <div>
+        </>
+        <>
           <label className="block text-sm font-medium text-gray-700">
             Language
           </label>
@@ -233,8 +233,8 @@ export default function CampaignFeatures({ isUpdate }) {
               </option>
             ))}
           </select>
-        </div>
-        <div>
+        </>
+        <>
           <label className="block text-sm font-medium text-gray-700">
             Voice
           </label>
@@ -252,8 +252,8 @@ export default function CampaignFeatures({ isUpdate }) {
               </option>
             ))}
           </select>
-        </div>
-        <div>
+        </>
+        <>
           <label className="block text-sm font-medium">Script</label>
           <textarea
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
@@ -271,8 +271,8 @@ export default function CampaignFeatures({ isUpdate }) {
           >
             Need To have min of 200 Characters
           </p>
-        </div>
-        <div>
+        </>
+        <>
           <label className="block text-sm font-medium">
             Knowledge Base URL
           </label>
@@ -283,8 +283,8 @@ export default function CampaignFeatures({ isUpdate }) {
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
-        </div>
-        <div>
+        </>
+        <>
           <label className="block text-sm font-medium">
             Knowledge Base Document
           </label>
@@ -296,11 +296,11 @@ export default function CampaignFeatures({ isUpdate }) {
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
-        </div>
+        </>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+          className="mt-4 w-full bg-[#fba668] bg-opacity-50 text-white font-bold py-2 px-4 rounded hover:bg-[#fba668] transition duration-300"
         >
           {isUpdate ? "Update Campaign" : "Create Campaign"}
         </button>

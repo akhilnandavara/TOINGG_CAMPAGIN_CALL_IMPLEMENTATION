@@ -106,7 +106,7 @@ const LoginSignup = () => {
         </form>
         <button
           onClick={() => setIsLoginForm(!isLoginForm)}
-          className="w-full p-3 bg-DarkBg border border-primary rounded text-primary font-semibold"
+          className="w-full p-3 bg-DarkBg hover:opacity-95 border border-primary rounded text-primary font-semibold"
         >
           {isLoginForm ? "Switch to Signup" : "Switch to Login"}
         </button>

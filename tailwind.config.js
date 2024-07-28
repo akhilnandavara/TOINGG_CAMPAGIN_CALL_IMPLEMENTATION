@@ -14,6 +14,10 @@ export default {
         DarkBg: '#1e293b', // Dark theme 
         menuText: '#e2e8f0', // Text color 
       },
+      screens: {
+        'max-xs:': {'max':'375px'},
+        'max-sm:': {'max':'650px'}
+      },
     },
   },
   plugins: [
