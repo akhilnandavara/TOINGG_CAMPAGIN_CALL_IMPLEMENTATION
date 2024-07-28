@@ -5,7 +5,7 @@ import { useAuthContext } from "../context/AuthContext";
 const SideMenu = () => {
   const [showOptions, setShowOptions] = React.useState("");
   const { isLogin, toggleLogin } = useAuthContext();
-  const username = JSON.parse(localStorage.getItem("user")).username;
+  const username = JSON.parse(localStorage.getItem("user"))?.username;
 
   return (
     <div className="bg-gradient-to-r  from-gradientStart overflow-hidden to-gradientEnd text-DarkBg h-screen min-w-48 box-content  shadow-lg">
