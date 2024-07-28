@@ -67,7 +67,7 @@ const SideMenu = () => {
               <>
                 <li>
                   <Link
-                    to="/create-call"
+                    to="/call-feature"
                     className="block p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
                   >
                     Create Call
@@ -75,10 +75,10 @@ const SideMenu = () => {
                 </li>
                 <li>
                   <Link
-                    to="/update-call"
+                    to="/call-log"
                     className="block p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
                   >
-                    Update Call
+                    Call Log
                   </Link>
                 </li>
               </>
