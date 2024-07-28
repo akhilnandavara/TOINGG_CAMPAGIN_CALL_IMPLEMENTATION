@@ -20,7 +20,7 @@ const App = () => {
           <SideMenu isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
          
           <div className={`flex-1 ${
-          isExpanded ? "  max-sm::ml-64" : "ml-20"
+          isExpanded ? "max-sm:ml-40 ml-64" : "ml-20"
         } p-6 overflow-y-auto`}>
             <Routes>
               <Route path="/" element={<Overview />} />

@@ -23,7 +23,7 @@ const SideMenu = ({ isExpanded, setIsExpanded }) => {
       {/* Sidebar */}
       <div
         className={`${
-          isExpanded ? "max-sm:w-full w-64" : "max-sm:w-10 w-24"
+          isExpanded ? "max-xs:w-full max-sm:w-40 w-64" : "max-xs:w-10 w-24"
         } py-4 bg-gradient-to-r transition-all duration-300 z-[1000] fixed h-full from-gradientStart to-gradientEnd text-DarkBg shadow-lg`}
       >
         <div className="flex flex-col justify-between h-full">
@@ -103,7 +103,7 @@ const SideMenu = ({ isExpanded, setIsExpanded }) => {
                   <li>
                     <Link
                       to="/call-log"
-                      className="block p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
+                      className="block  p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
                     >
                       Call Log
                     </Link>
@@ -120,12 +120,12 @@ const SideMenu = ({ isExpanded, setIsExpanded }) => {
                     <li>
                       <Link
                         to="/"
-                        className="block p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
+                        className="block max-sm:text-sm p-2 pl-5 rounded hover:bg-gray-200 transition duration-300"
                       >
                         Settings
                       </Link>
                     </li>
-                    <li className="block p-2 pl-5 w-full hover:bg-gray-200 transition duration-300">
+                    <li className="block max-sm:text-sm p-2 pl-5 w-full hover:bg-gray-200 transition duration-300">
                       <button onClick={toggleLogin}>Logout</button>
                     </li>
                   </ul>
@@ -140,10 +140,10 @@ const SideMenu = ({ isExpanded, setIsExpanded }) => {
                   <img
                     src={`https://ui-avatars.com/api/?name=${username}&background=random&rounded=true&color=fff`}
                     alt="profile"
-                    className="w-14 h-14 rounded-full"
+                    className=" w-10 sm:w-14 sm:h-14 rounded-full"
                   />
                   {isExpanded && (
-                    <span className="ml-2 text-lg ">{username}</span>
+                    <span className="ml-2 text-sm sm:text-lg ">{username}</span>
                   )}
                 </div>
               </div>

@@ -198,7 +198,7 @@ export default function CampaignFeatures({ isUpdate }) {
 
   return (
     <div className="max-w-md mx-auto p-5 text-gray-700  rounded-lg shadow-lg transition transform duration-500 hover:scale-105">
-      <h2 className="text-2xl font-bold mb-4">
+      <h2 className="text-lg sm:text-2xl font-bold mb-4">
         {isUpdate ? "Update Campaign" : "Create Campaign"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -212,7 +212,7 @@ export default function CampaignFeatures({ isUpdate }) {
             value={campaignData.title}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="mt-1 max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
         </>
         <>
@@ -224,7 +224,7 @@ export default function CampaignFeatures({ isUpdate }) {
             value={campaignData.language}
             onChange={handleChange}
             required
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 text-gray-700 transition duration-300"
+            className="mt-1 max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 text-gray-700 transition duration-300"
           >
             <option value="">Select a language</option>
             {languages.map((lang, i) => (
@@ -243,7 +243,7 @@ export default function CampaignFeatures({ isUpdate }) {
             value={campaignData.voice}
             onChange={handleChange}
             required
-            className="mt-1 block text-gray-700 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="mt-1 max-sm:text-xs block text-gray-700 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           >
             <option value="">Select a voice</option>
             {voices.map((voice, i) => (
@@ -256,7 +256,7 @@ export default function CampaignFeatures({ isUpdate }) {
         <>
           <label className="block text-sm font-medium">Script</label>
           <textarea
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="mt-1  max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
             placeholder="The script should have a minimum of 200 characters."
             name="script"
             value={campaignData.script}
@@ -281,7 +281,7 @@ export default function CampaignFeatures({ isUpdate }) {
             name="knowledgeBaseUrl"
             value={campaignData.knowledgeBaseUrl}
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="mt-1 max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
         </>
         <>
@@ -294,7 +294,7 @@ export default function CampaignFeatures({ isUpdate }) {
             name="knowledgeBase"
             accept=".pdf,.doc,.docx,.xls,.xlsx"
             onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="mt-1 max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           />
         </>
         <button
