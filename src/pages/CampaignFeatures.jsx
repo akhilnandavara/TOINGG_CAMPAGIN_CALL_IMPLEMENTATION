@@ -226,7 +226,7 @@ export default function CampaignFeatures({ isUpdate }) {
             required
             className="mt-1 max-sm:text-xs block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 text-gray-700 transition duration-300"
           >
-            <option value="">Select a language</option>
+            {/* <option value="">Select a language</option> */}
             {languages.map((lang, i) => (
               <option key={i} value={lang}>
                 {lang}
@@ -243,9 +243,9 @@ export default function CampaignFeatures({ isUpdate }) {
             value={campaignData.voice}
             onChange={handleChange}
             required
-            className="mt-1 max-sm:text-xs block text-gray-700 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
+            className="max-sm:text-xs w-full block text-gray-700  border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500 transition duration-300"
           >
-            <option value="">Select a voice</option>
+            {/* <option value="">Select a voice</option> */}
             {voices.map((voice, i) => (
               <option key={i} value={voice.name}>
                 {voice.name} {voice?.type}
@@ -302,7 +302,11 @@ export default function CampaignFeatures({ isUpdate }) {
           disabled={isSubmitting}
           className="mt-4 w-full bg-[#fba668] bg-opacity-50 text-white font-bold py-2 px-4 rounded hover:bg-[#fba668] transition duration-300"
         >
-          {isUpdate ? "Update Campaign" : "Create Campaign"}
+          {!isSubmitting
+            ? isUpdate
+              ? "Update Campaign"
+              : "Create Campaign"
+            : "Submitting..."}
         </button>
       </form>
     </div>
