@@ -148,16 +148,16 @@ const SideMenu = ({ isExpanded, setIsExpanded }) => {
                 </div>
               </div>
             ) : (
-              <li className="w-full">
+              <div className=" w-fit mx-auto">
                 <Link
                   to="/login"
                   className={`${
                     !isExpanded && "text-xs m-2"
-                  } bg-DarkBg hover:opacity-95 text-white px-4  py-2 rounded-md`}
+                  }  bg-DarkBg hover:opacity-95 text-white px-4    py-2 rounded-md`}
                 >
                   Login
                 </Link>
-              </li>
+              </div>
             )}
           </div>
         </div>
