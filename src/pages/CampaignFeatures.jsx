@@ -3,6 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Modal from "react-modal";
 import { base64ToFile, dataURLToFile, fileToDataURL } from "../utils/fileUtils";
+import { ClipLoader } from "react-spinners";
 
 const key = import.meta.env.VITE_AUTH_KEY;
 const toinggUrl = import.meta.env.VITE_TOINGG_URL;
@@ -89,6 +90,9 @@ export default function CampaignFeatures({ isUpdate }) {
       fetchCampaignData();
     } else {
       setCampaignData(initialCampaignData);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   }, [isUpdate]);
 
@@ -155,6 +159,12 @@ export default function CampaignFeatures({ isUpdate }) {
     };
 
     try {
+      if (campaignData.knowledgeBase === "") {
+        alert("Please upload a knowledge base document or Url");
+        setIsSubmitting(false);
+        return;
+      }
+
       if (isUpdate) {
         const campaignId = localStorage.getItem("campaignId");
         if (campaignId) {
@@ -194,7 +204,15 @@ export default function CampaignFeatures({ isUpdate }) {
   return (
     <>
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="flex place-content-center  h-screen  items-center ">
+          <ClipLoader
+            color={"#fba668"}
+            loading={isLoading}
+            size={100}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
       ) : (
         <div className="max-w-md mx-auto p-5 bg-white text-gray-700 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
           <h2 className="text-lg sm:text-2xl font-bold mb-4">
@@ -303,6 +321,14 @@ export default function CampaignFeatures({ isUpdate }) {
                 </button>
               )}
             </div>
+            {campaignData.knowledgeBase === "" &&
+            campaignData.knowledgeBaseUrl === "" ? (
+              <span className="text-red-400 text-xs">
+                Any One Knowledge Base details is Mandatory
+              </span>
+            ) : (
+              ""
+            )}
             <button
               type="submit"
               disabled={isSubmitting}

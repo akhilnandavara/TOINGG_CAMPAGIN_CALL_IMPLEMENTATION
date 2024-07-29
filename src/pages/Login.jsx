@@ -1,13 +1,13 @@
-// src/LoginSignup.js
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import bcrypt from "bcryptjs"; // Import bcryptjs
 
 const LoginSignup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [isLoginForm, setIsLoginForm] = useState(true);
   const { toggleLogin } = useAuthContext();
 
@@ -17,48 +17,47 @@ const LoginSignup = () => {
     setPassword("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoginForm) {
       // Handle login logic
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
-        console.log(user.email, email, password);
-        if (user.email === email && user.password === password) {
+        const isMatch = await bcrypt.compare(password, user.password); // Compare hashed password
+        if (user.email === email && isMatch) {
           toggleLogin();
-          naviagte("/");
-        } else if (user.email !== email && user.password !== password) {
-          alert("User Not Found");
+          navigate("/");
+        } else {
+          alert("Invalid Credentials");
           clearInputs();
-          setIsLoginForm(false);
-        } else alert("Invalid Credentials");
+        }
       } else {
         alert("User not found");
         clearInputs();
-        setIsLoginForm(false);
       }
     } else {
       // Handle signup logic
+      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
       localStorage.setItem(
         "user",
-        JSON.stringify({ username, email, password })
+        JSON.stringify({ username, email, password: hashedPassword })
       );
       clearInputs();
       toggleLogin();
-      naviagte("/");
+      navigate("/");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen  ">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="bg-gradient-to-b from-gradientStart to-gradientEnd p-8 rounded-lg shadow-md w-full max-w-md text-DarkBg">
-        <h2 className="text-lg sm:text-2xl font-bold mb-6 ">
+        <h2 className="text-lg sm:text-2xl font-bold mb-6">
           {isLoginForm ? "Login" : "Signup"}
         </h2>
         <form onSubmit={handleSubmit}>
           {!isLoginForm && (
             <div className="mb-4">
-              <label htmlFor="username" className="block  mb-2">
+              <label htmlFor="username" className="block mb-2">
                 Username
               </label>
               <input
@@ -72,7 +71,7 @@ const LoginSignup = () => {
             </div>
           )}
           <div className="mb-4">
-            <label htmlFor="email" className="block  mb-2">
+            <label htmlFor="email" className="block mb-2">
               Email
             </label>
             <input
@@ -85,13 +84,13 @@ const LoginSignup = () => {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block  mb-2">
+            <label htmlFor="password" className="block mb-2">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="w-full p-3 rounded bg-primary bg-opacity-50 drop-shadow-md  text-DarkBg"
+              className="w-full p-3 rounded bg-primary bg-opacity-50 drop-shadow-md text-DarkBg"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -99,7 +98,7 @@ const LoginSignup = () => {
           </div>
           <button
             type="submit"
-            className="w-full p-3 mb-4  rounded  bg-[#fba668] shadow-lg bg-opacity-50 hover:bg-opacity-100 transition-all duration-300  text-DarkBg font-semibold"
+            className="w-full p-3 mb-4 rounded bg-[#fba668] shadow-lg bg-opacity-50 hover:bg-opacity-100 transition-all duration-300 text-DarkBg font-semibold"
           >
             {isLoginForm ? "Login" : "Signup"}
           </button>
