@@ -1,10 +1,8 @@
----
-
 # Campaign Form Application
 
 ## Overview
 
-This application provides a form for creating and updating campaigns. It includes features such as language and voice selection, script input with character count, and file upload. It interacts with an external API to fetch supported languages and voices, and performs CRUD operations for campaigns.
+This application provides a form for creating and updating campaigns. It includes features such as language and voice selection, script input with character count, and file upload. It interacts with an external API to fetch supported languages and voices, and performs CRUD operations for campaigns. Additionally, password encryption has been implemented using `bcrypt` for enhanced security.
 
 ## Table of Contents
 
@@ -22,6 +20,7 @@ This application provides a form for creating and updating campaigns. It include
 - Select language and voice from fetched data.
 - Display character count for the script input.
 - Upload files with campaign data.
+- **Password encryption**: Utilizes `bcrypt` to securely handle user passwords.
 
 ## Technologies Used
 
@@ -29,6 +28,7 @@ This application provides a form for creating and updating campaigns. It include
 - **Vite**: Build tool and development server.
 - **Axios**: HTTP client for making API requests.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
+- **bcrypt**: Library for hashing and encrypting passwords.
 
 ## Setup Instructions
 
@@ -75,6 +75,7 @@ This application provides a form for creating and updating campaigns. It include
 
 - **Create Campaign**: Fill out the form and submit to create a new campaign.
 - **Update Campaign**: Navigate to the update page and submit the updated campaign details.
+- **Login/Signup**: User authentication now includes password encryption using `bcrypt`.
 
 ## API Integration
 
@@ -104,5 +105,3 @@ If you would like to contribute to this project, please follow these steps:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
